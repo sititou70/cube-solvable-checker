@@ -1,8 +1,8 @@
-import cv from "@techstark/opencv-js";
+import cv, { max } from "@techstark/opencv-js";
 
 export const VIDEO_SIZE_RATIO = 0.5;
 export const CUBE_SQUARE_SIZE_RATIO = 0.9;
-export const SUBCUBE_OFFSET_RATIO = 0.2;
+export const SUBCUBE_OFFSET_RATIO = 0.3;
 
 export const getCubeSquare = (video: HTMLVideoElement): cv.Rect => {
   const size = Math.min(video.width, video.height) * CUBE_SQUARE_SIZE_RATIO;
@@ -54,4 +54,32 @@ export const drawRectangle = (
     color,
     tickness
   );
+};
+
+const getHSVColorDistance = (c1: cv.Scalar, c2: cv.Scalar): number => {
+  const maxH = Math.max(c1[0], c2[0]);
+  const minH = Math.min(c1[0], c2[0]);
+  return Math.min(maxH - minH, minH + 255 - maxH);
+};
+export const cvtRGBA2HSV = (color: cv.Scalar): cv.Scalar => {
+  const tmp = new cv.Mat(1, 1, cv.CV_8UC4, color);
+  cv.cvtColor(tmp, tmp, cv.COLOR_RGB2HSV_FULL);
+  return new cv.Scalar(tmp.data[0], tmp.data[1], tmp.data[2]);
+};
+export const getNearestRGBAColor = <T extends { color: cv.Scalar }>(
+  color: cv.Scalar,
+  candidates: T[]
+): T => {
+  const colorHSV = cvtRGBA2HSV(color);
+  const candidatesHSV = candidates.map((candidate) => ({
+    ...candidate,
+    color: cvtRGBA2HSV(candidate.color),
+  }));
+
+  return candidatesHSV
+    .map((candidate) => ({
+      ...candidate,
+      distance: getHSVColorDistance(candidate.color, colorHSV),
+    }))
+    .reduce((c1, c2) => (c1.distance < c2.distance ? c1 : c2));
 };

@@ -28,8 +28,9 @@ export type ScannedCenterCubeColors = {
 type ScanningStep = keyof ScannedCenterCubeColors | "done";
 
 export const CenterCubeScanner: FC<{
+  flip: boolean;
   onScanned: (colors: ScannedCenterCubeColors) => void;
-}> = ({ onScanned }) => {
+}> = ({ flip, onScanned }) => {
   const [scanningCenterCubeColors, setScanningCenterCubeColors] = useState<
     Partial<ScannedCenterCubeColors>
   >({});
@@ -65,7 +66,7 @@ export const CenterCubeScanner: FC<{
     );
     drawRectangle(src, centerCubeSquare, new cv.Scalar(255, 255, 255, 255), 2);
 
-    cv.flip(src, src, 1);
+    if (flip) cv.flip(src, src, 1);
     cv.imshow("canvasOutput", src);
     src.delete();
   };
@@ -115,18 +116,20 @@ export const CenterCubeScanner: FC<{
       video.srcObject = stream;
     });
     let videoLoopTimer: number | undefined = undefined;
-    video.addEventListener("canplay", () => {
+    const onCanPlay = () => {
       video.width = video.videoWidth * VIDEO_SIZE_RATIO;
       video.height = video.videoHeight * VIDEO_SIZE_RATIO;
       videoCaptureRef.current = new cv.VideoCapture(video);
 
       videoLoopTimer = setInterval(drawLoop, 100);
-    });
+    };
+    video.addEventListener("canplay", onCanPlay);
 
     return () => {
       clearInterval(videoLoopTimer);
+      video.removeEventListener("canplay", onCanPlay);
     };
-  }, []);
+  }, [flip]);
 
   return (
     <>
