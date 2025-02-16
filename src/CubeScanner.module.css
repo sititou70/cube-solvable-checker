@@ -1,0 +1,8 @@
+video {
+  display: none;
+}
+
+canvas {
+  display: block;
+  max-width: 100%;
+}
