@@ -1,0 +1,16 @@
+.cubeViewerWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  height: calc(100vw / 4 * 3);
+  max-width: 500px;
+  max-height: calc(500px / 4 * 3);
+}
+
+.faceWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}

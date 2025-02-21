@@ -2,49 +2,78 @@ import { FC, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import {
-  CenterCubeScanner,
-  ScannedCenterCubeColors,
-} from "./CenterCubeScanner";
-import { useLocalStorage } from "./common";
-import { FaceScanner } from "./FaceScanner";
+  CameraMode,
+  CenterCubeColors,
+  CubeScanner,
+  FlipMode,
+} from "./CubeScanner";
+import { useLocalStorage } from "./useLocalStorage";
+import { Cube } from "./model";
+import { CubeViewer } from "./CubeViewer";
 
 const App: FC = () => {
-  const [
-    scannedCenterCubeColors,
-    setScannedCenterCubeColors,
-    resetScannedCenterCubeColors,
-  ] = useLocalStorage<ScannedCenterCubeColors | null>(
-    "cube-solvable-checker/scannedCenterCubeColors",
-    null
+  const [cameraMode, setCameraMode] = useLocalStorage<CameraMode>(
+    "cube-solvable-checker/cameraMode",
+    "default"
   );
-  const [flip, setFlip] = useLocalStorage<boolean>(
-    "cube-solvable-checker/flip",
-    false
+  const [flipMode, setFlip] = useLocalStorage<FlipMode>(
+    "cube-solvable-checker/flipMode",
+    "environment"
   );
+  const [scanContext, setScanContext] = useLocalStorage<{
+    cube: Cube;
+    centerCubeColors: CenterCubeColors;
+  } | null>("cube-solvable-checker/cubeContext", null);
+
+  if (
+    cameraMode === "initializing" ||
+    flipMode === "initializing" ||
+    scanContext === "initializing"
+  )
+    return "loading";
 
   return (
     <>
-      <button onClick={() => resetScannedCenterCubeColors()}>
-        reset center cube
+      <button
+        onClick={() => {
+          setCameraMode(
+            (
+              {
+                default: "user",
+                user: "environment",
+                environment: "default",
+              } satisfies Record<CameraMode, CameraMode>
+            )[cameraMode]
+          );
+        }}
+      >
+        cameraMode: {cameraMode}
       </button>
-      <button onClick={() => setFlip(!flip)}>toggle flip</button>
+      <button
+        onClick={() =>
+          setFlip(flipMode === "environment" ? "user" : "environment")
+        }
+      >
+        flipMode: {flipMode}
+      </button>
+      {scanContext !== null && (
+        <button onClick={() => setScanContext(null)}>retry scan</button>
+      )}
 
-      {scannedCenterCubeColors === null && (
-        <CenterCubeScanner
-          flip={flip}
-          onScanned={(colors) => {
-            setScannedCenterCubeColors(colors);
+      {scanContext === null && (
+        <CubeScanner
+          cameraMode={cameraMode}
+          flipMode={flipMode}
+          onScanned={(context) => {
+            setScanContext(context);
           }}
         />
       )}
 
-      {scannedCenterCubeColors && (
-        <FaceScanner
-          flip={flip}
-          scannedCenterCubeColors={scannedCenterCubeColors}
-          onScanned={(faces) => {
-            console.log({ faces });
-          }}
+      {scanContext !== null && (
+        <CubeViewer
+          cube={scanContext.cube}
+          centerCubeColors={scanContext.centerCubeColors}
         />
       )}
     </>
