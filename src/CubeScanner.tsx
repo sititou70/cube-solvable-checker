@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from "react";
 import cv from "@techstark/opencv-js";
-import "./CubeScanner.module.css";
+import styles from "./CubeScanner.module.css";
 import {
   compareFace,
   Cube,
@@ -183,8 +183,8 @@ export const CubeScanner: FC<{
 
   return (
     <>
-      <video autoPlay ref={videoRef} />
-      <canvas id="canvasOutput" />
+      <video autoPlay ref={videoRef} className={styles.video} />
+      <canvas id="canvasOutput" className={styles.canvas} />
       <button onClick={() => scan()}>撮影して次へ</button>
       {error && (
         <>
