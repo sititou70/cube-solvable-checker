@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run --silent=false"
+    "test": "vitest run --silent=false",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@techstark/opencv-js": "^4.10.0-release.1",
@@ -26,6 +27,7 @@
     "eslint": "^9.19.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
+    "gh-pages": "^6.3.0",
     "globals": "^15.14.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.22.0",
