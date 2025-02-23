@@ -7,7 +7,7 @@ import {
   sortAndCountTranspositionNum,
 } from "./checkerUtil";
 
-export const CubeSolveableChecker: FC<{
+export const CubeSolvableChecker: FC<{
   cube: Cube;
 }> = ({ cube }) => {
   // check transposition
@@ -52,7 +52,7 @@ export const CubeSolveableChecker: FC<{
   ).transpositionNum;
   const transpositionNum =
     cornerCubeTranspositionNum + edgeCubeTranspositionNum;
-  const isSolveablePermutation = transpositionNum % 2 === 0;
+  const isSolvablePermutation = transpositionNum % 2 === 0;
 
   // check rotation
   let cornerCubeRotationSum = 0;
@@ -78,34 +78,34 @@ export const CubeSolveableChecker: FC<{
       }
     }
   }
-  const isSolveableCornerCubeRotation = cornerCubeRotationSum % 3 === 0;
-  const isSolveableEdgeCubeRotation = edgeCubeRotationSum % 2 === 0;
+  const isSolvableCornerCubeRotation = cornerCubeRotationSum % 3 === 0;
+  const isSolvableEdgeCubeRotation = edgeCubeRotationSum % 2 === 0;
 
   return (
     <>
       <p>
-        {isSolveablePermutation &&
-        isSolveableCornerCubeRotation &&
-        isSolveableEdgeCubeRotation
+        {isSolvablePermutation &&
+        isSolvableCornerCubeRotation &&
+        isSolvableEdgeCubeRotation
           ? "✅解けます"
           : "❌解けません"}
       </p>
 
       <ul>
         <li>
-          {isSolveablePermutation
+          {isSolvablePermutation
             ? "✅位置は偶置換でソートできます。"
             : "❌位置は奇置換でないとソートできません。"}
           見つかった互換の数は{transpositionNum}個です。
         </li>
         <li>
-          {isSolveableCornerCubeRotation
+          {isSolvableCornerCubeRotation
             ? "✅コーナーキューブの回転量の合計は3の倍数です。"
             : "❌コーナーキューブの回転量の合計が3の倍数ではありません。"}
           回転量の合計は{cornerCubeRotationSum}です。
         </li>
         <li>
-          {isSolveableEdgeCubeRotation
+          {isSolvableEdgeCubeRotation
             ? "✅エッジキューブの回転量の合計は2の倍数です。"
             : "❌エッジキューブの回転量の合計が2の倍数ではありません。"}
           回転量の合計は{edgeCubeRotationSum}です。
