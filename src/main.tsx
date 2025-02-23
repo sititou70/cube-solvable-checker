@@ -10,6 +10,7 @@ import {
 import { useLocalStorage } from "./useLocalStorage";
 import { Cube } from "./model";
 import { CubeViewer } from "./CubeViewer";
+import { CubeSolveableChecker } from "./CubeSolveableChecker";
 
 const App: FC = () => {
   const [cameraMode, setCameraMode] = useLocalStorage<CameraMode>(
@@ -76,6 +77,8 @@ const App: FC = () => {
           centerCubeColors={scanContext.centerCubeColors}
         />
       )}
+
+      {scanContext !== null && <CubeSolveableChecker cube={scanContext.cube} />}
     </>
   );
 };

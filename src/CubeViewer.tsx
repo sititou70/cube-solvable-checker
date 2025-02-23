@@ -49,7 +49,7 @@ export const CubeColorViewer: FC<{
       <Face faceColorGrid={cubeColors.back} />
 
       <div />
-      <Face faceColorGrid={cubeColors.bottom} />
+      <Face faceColorGrid={cubeColors.down} />
       <div />
       <div />
     </div>
