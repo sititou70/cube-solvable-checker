@@ -7,7 +7,7 @@ export const sortAndCountTranspositionNum = <T>(
 ): { sorted: T[]; transpositionNum: number } => {
   const arr = array.concat();
   let transpositionNum = 0;
-  for (let i = array.length; i > 0; i--) {
+  for (let i = array.length - 1; i > 0; i--) {
     for (let j = 0; j < i; j++) {
       if (compare(arr[j], arr[j + 1]) > 0) {
         const tmp = arr[j];
