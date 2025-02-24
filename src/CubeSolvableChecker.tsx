@@ -11,47 +11,32 @@ export const CubeSolvableChecker: FC<{
   cube: Cube;
 }> = ({ cube }) => {
   // check transposition
-  const correctCornerCubeOrder: string[] = [];
-  const actualCornerCubeOrder: string[] = [];
-  const correctEdgeCubeOrder: string[] = [];
-  const actualEdgeCubeOrder: string[] = [];
+  const correctSubcubeOrder: string[] = [];
+  const actualSubcubeOrder: string[] = [];
   for (const x of [0, 1, 2] as const) {
     for (const y of [0, 1, 2] as const) {
       for (const z of [0, 1, 2] as const) {
         const subcubeFaces = getSubcubeFaces(cube, { x, y, z });
 
-        if (Object.keys(subcubeFaces).length === 3) {
-          correctCornerCubeOrder.push(
+        if (
+          Object.keys(subcubeFaces).length === 3 ||
+          Object.keys(subcubeFaces).length === 2
+        ) {
+          correctSubcubeOrder.push(
             getSubcubeId(Object.keys(subcubeFaces) as FaceName[])
           );
-          actualCornerCubeOrder.push(
-            getSubcubeId(Object.values(subcubeFaces) as FaceName[])
-          );
-        }
-
-        if (Object.keys(subcubeFaces).length === 2) {
-          correctEdgeCubeOrder.push(
-            getSubcubeId(Object.keys(subcubeFaces) as FaceName[])
-          );
-          actualEdgeCubeOrder.push(
+          actualSubcubeOrder.push(
             getSubcubeId(Object.values(subcubeFaces) as FaceName[])
           );
         }
       }
     }
   }
-  const cornerCubeTranspositionNum = sortAndCountTranspositionNum(
-    actualCornerCubeOrder,
+  const transpositionNum = sortAndCountTranspositionNum(
+    actualSubcubeOrder,
     (f1, f2) =>
-      correctCornerCubeOrder.indexOf(f1) - correctCornerCubeOrder.indexOf(f2)
+      correctSubcubeOrder.indexOf(f1) - correctSubcubeOrder.indexOf(f2)
   ).transpositionNum;
-  const edgeCubeTranspositionNum = sortAndCountTranspositionNum(
-    actualEdgeCubeOrder,
-    (f1, f2) =>
-      correctEdgeCubeOrder.indexOf(f1) - correctEdgeCubeOrder.indexOf(f2)
-  ).transpositionNum;
-  const transpositionNum =
-    cornerCubeTranspositionNum + edgeCubeTranspositionNum;
   const isSolvablePermutation = transpositionNum % 2 === 0;
 
   // check rotation
