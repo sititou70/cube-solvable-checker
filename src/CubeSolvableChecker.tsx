@@ -94,8 +94,8 @@ export const CubeSolvableChecker: FC<{
       <ul>
         <li>
           {isSolvablePermutation
-            ? "✅位置は偶置換でソートできます。"
-            : "❌位置は奇置換でないとソートできません。"}
+            ? "✅位置の置換は偶置換です。"
+            : "❌位置の置換は奇置換です。"}
           見つかった互換の数は{transpositionNum}個です。
         </li>
         <li>
