@@ -53,7 +53,7 @@ export const correctFaceRotation = (cube: Cube): Result<Cube> => {
           "left180",
           "left270",
         ] satisfies RotationAngle[]) {
-          for (const topRotation of [
+          for (const upRotation of [
             "0",
             "left90",
             "left180",
@@ -70,7 +70,7 @@ export const correctFaceRotation = (cube: Cube): Result<Cube> => {
                 right: rotateFaceGrid(cube.right, rightRotation),
                 back: rotateFaceGrid(cube.back, backRotation),
                 left: rotateFaceGrid(cube.left, leftRotation),
-                top: rotateFaceGrid(cube.top, topRotation),
+                up: rotateFaceGrid(cube.up, upRotation),
                 down: rotateFaceGrid(cube.down, downRotation),
               };
 

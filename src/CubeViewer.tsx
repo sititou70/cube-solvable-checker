@@ -39,7 +39,7 @@ export const CubeColorViewer: FC<{
   return (
     <div className={styles.cubeViewerWrapper}>
       <div />
-      <Face faceColorGrid={cubeColors.top} />
+      <Face faceColorGrid={cubeColors.up} />
       <div />
       <div />
 

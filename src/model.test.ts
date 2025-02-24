@@ -22,10 +22,10 @@ const solvedCube: Cube = {
     ["left", "left", "left"],
     ["left", "left", "left"],
   ],
-  top: [
-    ["top", "top", "top"],
-    ["top", "top", "top"],
-    ["top", "top", "top"],
+  up: [
+    ["up", "up", "up"],
+    ["up", "up", "up"],
+    ["up", "up", "up"],
   ],
   down: [
     ["down", "down", "down"],
@@ -37,10 +37,10 @@ const solvedCube: Cube = {
 describe("getSubcubeFaces", () => {
   test.each`
     pos                     | expected
-    ${{ x: 0, y: 0, z: 0 }} | ${{ left: "left", back: "back", top: "top" }}
-    ${{ x: 2, y: 0, z: 0 }} | ${{ right: "right", back: "back", top: "top" }}
-    ${{ x: 0, y: 2, z: 0 }} | ${{ left: "left", front: "front", top: "top" }}
-    ${{ x: 2, y: 2, z: 0 }} | ${{ right: "right", front: "front", top: "top" }}
+    ${{ x: 0, y: 0, z: 0 }} | ${{ left: "left", back: "back", up: "up" }}
+    ${{ x: 2, y: 0, z: 0 }} | ${{ right: "right", back: "back", up: "up" }}
+    ${{ x: 0, y: 2, z: 0 }} | ${{ left: "left", front: "front", up: "up" }}
+    ${{ x: 2, y: 2, z: 0 }} | ${{ right: "right", front: "front", up: "up" }}
     ${{ x: 0, y: 0, z: 2 }} | ${{ left: "left", back: "back", down: "down" }}
     ${{ x: 2, y: 0, z: 2 }} | ${{ right: "right", back: "back", down: "down" }}
     ${{ x: 0, y: 2, z: 2 }} | ${{ left: "left", front: "front", down: "down" }}

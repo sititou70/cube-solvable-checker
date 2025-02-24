@@ -35,8 +35,8 @@ export const CubeScanner: FC<{
 }> = ({ cameraMode, flipMode, onScanned }) => {
   const faceNameOrder: FaceName[] = (
     {
-      environment: ["front", "right", "back", "left", "top", "down"],
-      user: ["back", "right", "front", "left", "top", "down"],
+      environment: ["front", "right", "back", "left", "up", "down"],
+      user: ["back", "right", "front", "left", "up", "down"],
     } satisfies Record<FlipMode, FaceName[]>
   )[flipMode];
   const [scanningFaceName, setScanningFaceName] = useState<FaceName>(

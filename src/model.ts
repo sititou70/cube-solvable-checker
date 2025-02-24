@@ -6,7 +6,7 @@ export type Faces<T> = {
   right: T;
   front: T;
   left: T;
-  top: T;
+  up: T;
   down: T;
 };
 
@@ -25,7 +25,7 @@ export const defaultFaceNameOrder: FaceName[] = [
   "right",
   "back",
   "left",
-  "top",
+  "up",
   "down",
 ];
 
@@ -75,7 +75,7 @@ export const getSubcubeFaces = (
   if (pos.x === 2) faces = { ...faces, right: cube.right[pos.z][2 - pos.y] };
   if (pos.y === 0) faces = { ...faces, back: cube.back[pos.z][2 - pos.x] };
   if (pos.x === 0) faces = { ...faces, left: cube.left[pos.z][pos.y] };
-  if (pos.z === 0) faces = { ...faces, top: cube.top[pos.y][pos.x] };
+  if (pos.z === 0) faces = { ...faces, up: cube.up[pos.y][pos.x] };
   if (pos.z === 2) faces = { ...faces, down: cube.down[2 - pos.y][pos.x] };
 
   return faces;
