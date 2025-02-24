@@ -46,13 +46,13 @@ export const CubeScanner: FC<{
     Partial<Faces<FaceGrid<cv.Scalar>>>
   >({});
 
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const videoCaptureRef = useRef<cv.VideoCapture | null>(null);
-
   const [error, setError] = useState<{
     message: string;
     scannedContext?: { cube: Cube; centerCubeColors: CenterCubeColors };
   } | null>(null);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoCaptureRef = useRef<cv.VideoCapture | null>(null);
 
   const drawLoop = () => {
     const video = videoRef.current;
@@ -80,6 +80,42 @@ export const CubeScanner: FC<{
     cv.imshow("canvasOutput", src);
     src.delete();
   };
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video === null) return;
+
+    let mediaStream: MediaStream;
+    navigator.mediaDevices
+      .getUserMedia({
+        video:
+          cameraMode === "default"
+            ? true
+            : { facingMode: { exact: cameraMode } },
+      })
+      .then((stream) => {
+        video.srcObject = stream;
+        mediaStream = stream;
+      })
+      .catch((e) => {
+        setError({ message: `getUserMedia failed: ${e.toString()}` });
+      });
+
+    let videoLoopTimer: number | undefined = undefined;
+    const onCanPlay = () => {
+      video.width = video.videoWidth * VIDEO_SIZE_RATIO;
+      video.height = video.videoHeight * VIDEO_SIZE_RATIO;
+      videoCaptureRef.current = new cv.VideoCapture(video);
+
+      videoLoopTimer = setInterval(drawLoop, 100);
+    };
+    video.addEventListener("canplay", onCanPlay);
+
+    return () => {
+      clearInterval(videoLoopTimer);
+      video.removeEventListener("canplay", onCanPlay);
+      mediaStream?.getVideoTracks().forEach((camera) => camera.stop());
+    };
+  }, [cameraMode, flipMode]);
 
   const scan = () => {
     const video = videoRef.current;
@@ -144,48 +180,24 @@ export const CubeScanner: FC<{
     onScanned({ cube: correctRotationResult.value, centerCubeColors });
   };
 
+  const retryScan = () => {
+    setScanningFaceName(faceNameOrder[0]);
+    setScanningColors({});
+    setError(null);
+  };
+
   useEffect(() => {
-    const video = videoRef.current;
-    if (video === null) return;
-
-    let mediaStream: MediaStream;
-    navigator.mediaDevices
-      .getUserMedia({
-        video:
-          cameraMode === "default"
-            ? true
-            : { facingMode: { exact: cameraMode } },
-      })
-      .then((stream) => {
-        video.srcObject = stream;
-        mediaStream = stream;
-      })
-      .catch((e) => {
-        setError({ message: `getUserMedia failed: ${e.toString()}` });
-      });
-
-    let videoLoopTimer: number | undefined = undefined;
-    const onCanPlay = () => {
-      video.width = video.videoWidth * VIDEO_SIZE_RATIO;
-      video.height = video.videoHeight * VIDEO_SIZE_RATIO;
-      videoCaptureRef.current = new cv.VideoCapture(video);
-
-      videoLoopTimer = setInterval(drawLoop, 100);
-    };
-    video.addEventListener("canplay", onCanPlay);
-
-    return () => {
-      clearInterval(videoLoopTimer);
-      video.removeEventListener("canplay", onCanPlay);
-      mediaStream?.getVideoTracks().forEach((camera) => camera.stop());
-    };
-  }, [cameraMode, flipMode]);
+    retryScan();
+  }, [flipMode]);
 
   return (
     <>
       <video autoPlay ref={videoRef} className={styles.video} />
       <canvas id="canvasOutput" className={styles.canvas} />
+
       <button onClick={() => scan()}>撮影して次へ</button>
+      <button onClick={() => retryScan()}>retry scan</button>
+
       {error && (
         <>
           <pre>error: {error.message}</pre>
@@ -210,6 +222,7 @@ export const CubeScanner: FC<{
           )}
         </>
       )}
+
       <ScanningStatus
         scanningFaceName={scanningFaceName}
         faceNameOrder={faceNameOrder}
